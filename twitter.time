@@ -1,0 +1,15 @@
+# -------------------------------------------------------------------------- #
+# twitter.time
+
+# Utility to convert Twitter's date/time format into a POSIXct POSIXt object.
+
+twitter.time = function(x) {
+	a <- strsplit(x, " ")[[1]]
+	d <- a[3]
+	y <- a[6]
+	m <- switch(a[2], Jan = "01", Feb = "02", Mar = "03", Apr = "04",
+		May = "05", Jun = "06", Jul = "07", Aug = "08", Sep = "09",
+		Oct = "10", Nov = "11", Dec = "12")
+	tmp <- paste(paste(y, m, d, sep = "-"), a[4])
+	as.POSIXct(strptime(tmp, "%Y-%m-%d %H:%M:%S"))
+}
