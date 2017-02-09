@@ -7,7 +7,7 @@
 # count             number of tweets to be returned (defaults to 20, you may 
 #                   retrieve up to 200 tweets by call*)
 # since             tweet_id to start with (as string)*
-# max               tweet_id to start with (as string)*
+# max               tweet_id to stop with (as string)*
 # replies           logical, include replies? Defaults to TRUE
 
 # Returns a list of tweet objects.
@@ -24,7 +24,7 @@ read.mentions = function(count = 20, since = NULL, max = NULL,
 	if(ans$status == 200) {
 		res <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
 	} else {
-		stop("Failed to read timeline!")
+		stop("Failed to read mentions!")
 	}
 	return(res)
 }
