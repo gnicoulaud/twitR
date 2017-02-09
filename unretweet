@@ -1,0 +1,20 @@
+# -------------------------------------------------------------------------- #
+# unretweet
+# -------------------------------------------------------------------------- #
+
+# Unretweets a tweet by its tweet_id
+
+# tweet_id          string id of the tweet to be unretweeted
+
+# Returns TRUE on success
+
+unretweet = function(tweet_id) {
+	tweet_id <- as.character(tweet_id)
+	u <- paste("https://api.twitter.com/1.1/statuses/unretweet/",
+		tweet_id, ".json", sep = "")
+	token <- .GlobalEnv$.twitter$token
+	query <- list(tweet_id = tweet_id)
+	ans <- try(POST(u, query = query, token), silent = TRUE)
+	res <- ans$status == 200
+	return(res)
+}
