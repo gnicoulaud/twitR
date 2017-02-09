@@ -1,0 +1,25 @@
+# -------------------------------------------------------------------------- #
+# upload.media
+# -------------------------------------------------------------------------- #
+
+# Utility used by *tweet* to upload up to 4 medias to be used in a tweet.
+
+# media             path to the media to be uploaded
+
+# Returns the media_id(s) as string.
+
+upload.media = function(media) {
+	if(! file.exists(media)) stop("no such file in directory")
+	b64 <- base64enc:::base64encode(media)
+	token <- .GlobalEnv$.twitter$token
+	u <- "https://upload.twitter.com/1.1/media/upload.json"
+	body <- list(media_data = b64)
+	ans <- try(POST(u, body = body, token), silent = TRUE)
+	if(ans$status == 200) {
+		raw <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
+		res <- raw$media_id_string
+	} else {
+		stop("Could not upload media!")
+	}
+	invisible(res)
+}
