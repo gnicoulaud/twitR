@@ -1,0 +1,27 @@
+# -------------------------------------------------------------------------- #
+# get.users
+# -------------------------------------------------------------------------- #
+
+# Get information on a list of users
+
+# user              screen_name(s) or IDs
+# byid              logical, are you providing screen_name(s) or IDs?
+
+# Returns a bulk of user objects (up to 100).
+
+get.users = function(user, byid = FALSE) {
+	if(byid) {
+		q <- list(user_id = toString(user))
+	} else {
+		q <- list(screen_name = toString(user))
+	}
+	u <- "https://api.twitter.com/1.1/users/lookup.json"
+	token <- .GlobalEnv$.twitter$token
+	ans <- try(GET(u, query = q, token), silent = TRUE)
+	if(ans$status == 200) {
+		res <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
+	} else {
+		stop("Failed to get users!")
+	}
+	return(res)
+}
