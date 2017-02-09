@@ -4,7 +4,7 @@
 
 # Get the last tweets faved by any given user
 
-# user              screen_name (i.e. the @username with the @ symbol)
+# user              screen_name (i.e. the @username)
 # count             number of tweetss to be returned (defaults to 20, you may 
 #                   retrieve up to 200 tweets by call*)
 # since             id to start with (as string)*
@@ -16,7 +16,6 @@
 
 get.favs = function(user, count = 20, since = NULL, max = NULL,
 	replies = TRUE) {
-	if(substr(user, 1, 1) != "@") stop("'user' must a valid screen_name!")
 	q <- list(screen_name = user, count = count, since_id = since,
 		max_ix = max, include_entities = TRUE)
 	u <- "https://api.twitter.com/1.1/favorites/list.json"
