@@ -1,0 +1,31 @@
+# -------------------------------------------------------------------------- #
+# read.timeline
+# -------------------------------------------------------------------------- #
+
+# Reads your timeline
+
+# count             number of tweets to be returned (defaults to 20, up to 200)
+# since             tweet_id to start with (as string)*
+# max               tweet_id to start with (as string)*
+# replies           logical, include replies? Defaults to TRUE
+
+# Returns a list of tweet objects.
+# (*) If you want to retrieve more than 200 tweets, use *since* or *max* with
+#     *count* to iterate calls.
+
+read.timeline = function(count = 20, since = NULL, max = NULL,
+	replies = TRUE) {
+	q <- list(count = count, since_id = since, max_ix = max,
+		trim_user = FALSE, exclude_replies = !replies,
+		contributor_details = TRUE, include_entities = TRUE)
+	u <- "https://api.twitter.com/1.1/statuses/home_timeline.json"
+	token <- .GlobalEnv$.twitter$token
+	ans <- try(GET(u, query = q, token), silent = TRUE)
+	if(ans$status == 200) {
+		res <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
+		class(res) <- "timeline"
+	} else {
+		stop("Failed to read timeline!")
+	}
+	return(res)
+}
