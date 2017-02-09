@@ -24,7 +24,6 @@ read.timeline = function(count = 20, since = NULL, max = NULL,
 	ans <- try(GET(u, query = q, token), silent = TRUE)
 	if(ans$status == 200) {
 		res <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
-		class(res) <- "timeline"
 	} else {
 		stop("Failed to read timeline!")
 	}
