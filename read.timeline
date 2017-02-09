@@ -4,7 +4,8 @@
 
 # Reads your timeline
 
-# count             number of tweets to be returned (defaults to 20, up to 200)
+# count             number of tweets to be returned (defaults to 20, up 
+#                   may retrieve up to 200 twwets by call*)
 # since             tweet_id to start with (as string)*
 # max               tweet_id to start with (as string)*
 # replies           logical, include replies? Defaults to TRUE
