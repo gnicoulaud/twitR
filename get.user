@@ -1,0 +1,27 @@
+# -------------------------------------------------------------------------- #
+# get.user
+# -------------------------------------------------------------------------- #
+
+# Get information on any given user
+
+# user              screen_name or ID
+# byid              logical, are you providing a screen_name or an ID?
+
+# Returns a single user object. Use *get.users* to retrieve a bulk of users.
+
+get.user = function(user, byid = FALSE) {
+	if(byid) {
+		q <- list(user_id = user, include_entities = TRUE)
+	} else {
+		q <- list(screen_name = user, include_entities = TRUE)
+	}
+	u <- "https://api.twitter.com/1.1/users/show.json"
+	token <- .GlobalEnv$.twitter$token
+	ans <- try(GET(u, query = q, token), silent = TRUE)
+	if(ans$status == 200) {
+		res <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
+	} else {
+		stop("Failed to get user!")
+	}
+	return(res)
+}
