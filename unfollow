@@ -1,0 +1,19 @@
+# -------------------------------------------------------------------------- #
+# unfollow
+# -------------------------------------------------------------------------- #
+
+# Unfollows a user
+
+# user              screen_name (i.e. the @username with the @ symbol)
+
+# Returns TRUE on success
+
+unfollow = function(user) {
+	if(substr(user, 1, 1) != "@") stop("'user' must a valid screen_name!")
+	u <- "https://api.twitter.com/1.1/friendships/destroy.json"
+	query <- list(screen_name = user)
+	token <- .GlobalEnv$.twitter$token
+	ans <- try(POST(u, query = query, token), silent = TRUE)
+	res <- ans$status == 200
+	return(res)
+}
