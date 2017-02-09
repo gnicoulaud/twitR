@@ -1,0 +1,35 @@
+# -------------------------------------------------------------------------- #
+# twit.search
+# -------------------------------------------------------------------------- #
+
+# Search Twitter
+
+# x                 search string
+# lang              langage
+# type              1 for mixed, 2 for recent, 3 for popular
+# count             number of tweetss to be returned (defaults to 20, you may 
+#                   retrieve up to 100 tweets by call*)
+# since             id to start with (as string)*
+# max               id to stop with (as string)*
+
+# Returns a list of tweet objects (in *statuses*) and metadata
+# (*search_metadata*).
+# (*) If you want to retrieve more than 100 tweets, use *since* or *max* with
+#     *count* to iterate calls.
+
+twit.search = function(x, lang = NULL, type = 1, count = 100, since = NULL,
+	max = NULL) {
+	tmp <- c("mixed", "recent", "popular")[type]
+	q <- list(q = URLencode(x), lang = lang, result_type = tmp,
+		count = count, since_id = since, max_id = max,
+		include_entities = TRUE)
+	u <- "https://api.twitter.com/1.1/search/tweets.json"
+	token <- .GlobalEnv$.twitter$token
+	ans <- try(GET(u, query = q, token), silent = TRUE)
+	if(ans$status == 200) {
+		res <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
+	} else {
+		stop("Failed to search!")
+	}
+	return(res)
+}
