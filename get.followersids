@@ -1,0 +1,36 @@
+# -------------------------------------------------------------------------- #
+# get.followersids
+# -------------------------------------------------------------------------- #
+
+# Get the followers ID's of any given user
+
+# user              screen_name (i.e. the @username with the @ symbol)
+
+# Returns a list of user_ids (numeric but returned as string).
+# That function will perform as many call as necessary to retrieve all the
+# followers by pack of 5000. Shortcoming: there are numeric IDs. You may also
+# use *get.followers* that retrieves user objects but will be rate limited
+# much faster.
+
+get.followersids = function(user) {
+	if(substr(user, 1, 1) != "@") stop("'user' must a valid screen_name!")
+	u <- "https://api.twitter.com/1.1/followers/ids.json"
+	token <- .GlobalEnv$.twitter$token
+	cursor <- "-1"
+	res <- NULL
+	while(cursor != "0") {
+		q <- list(screen_name = user, count = 5000, stringify_ids = TRUE,
+			cursor = cursor)
+		ans <- try(GET(u, query = q, token), silent = TRUE)
+		if(ans$status == 200) {
+			r <- fromJSON(content(ans, as = "text",
+				encoding = "UTF-8"))
+			res <- c(res, r$ids)
+			cursor <- r$next_cursor_str
+		} else {
+			break()
+			warning("Couldn't get followers. Check rate limits.")
+		}
+	}
+	return(res)
+}
