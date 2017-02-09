@@ -4,7 +4,7 @@
 
 # Get the friends ID's of any given user
 
-# user              screen_name (i.e. the @username with the @ symbol)
+# user              screen_name (i.e. the @username)
 
 # Returns a list of user_ids (numeric but returned as string).
 # That function will perform as many call as necessary to retrieve all the
@@ -13,7 +13,6 @@
 # much faster.
 
 get.friendsids = function(user) {
-	if(substr(user, 1, 1) != "@") stop("'user' must a valid screen_name!")
 	u <- "https://api.twitter.com/1.1/friends/ids.json"
 	token <- .GlobalEnv$.twitter$token
 	cursor <- "-1"
