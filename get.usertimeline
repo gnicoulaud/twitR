@@ -1,0 +1,33 @@
+# -------------------------------------------------------------------------- #
+# get.usertimeline
+# -------------------------------------------------------------------------- #
+
+# Get the last tweets of any given user
+
+# user              screen_name (i.e. the @username)
+# count             number of tweetss to be returned (defaults to 20, you may 
+#                   retrieve up to 100 tweets by call*)
+# since             id to start with (as string)*
+# max               id to stop with (as string)*
+# rts               logical, include RTs?
+# replies           logical, include replies?
+
+# Returns a list of tweet objects.
+# (*) If you want to retrieve more than 100 tweets, use *since* or *max* with
+#     *count* to iterate calls.
+
+get.usertimeline = function(user, count = 20, since = NULL, max = NULL,
+	rts = FALSE, replies = FALSE) {
+	q <- list(screen_name = user, count = count, since_id = since,
+		max_ix = max, trim_user = TRUE, exclude_replies = !replies, 
+		contributor_details = TRUE, include_rts = rts)
+	u <- "https://api.twitter.com/1.1/statuses/user_timeline.json"
+	token <- .GlobalEnv$.twitter$token
+	ans <- try(GET(u, query = q, token), silent = TRUE)
+	if(ans$status == 200) {
+		res <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
+	} else {
+		stop("Failed to get user timeline!")
+	}
+	return(res)
+}
