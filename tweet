@@ -1,0 +1,45 @@
+# -------------------------------------------------------------------------- #
+# tweet
+# -------------------------------------------------------------------------- #
+
+# Tweets.
+
+# status            a string of no more than 140 characters
+# reply             tweet_id as a string. You have to mention the @user your
+#                   are replying to in 'status'
+# sensitive         logical, are you twetting porn?
+# coords            logical, display coordinates or not?
+# media             path to the media you want to insert (passed to 
+#                   *upload.media*)
+
+# Returns the tweet_id as string.
+
+tweet = function(status, reply = NULL, sensitive = FALSE, coords = FALSE,
+	media = NULL) {
+	query <- list(status = enc2utf8(status))
+	if(! is.null(reply)) {
+		if(! grepl("@", status)) {
+			warning("reply ignored: you have to mention @user!")
+		}
+		query <- c(query, in_reply_to_status_id = reply)
+	}
+	if(sensitive) query <- c(query, possibly_sensitive = TRUE)
+	if(coords) query <- c(query, display_coordinates = TRUE)
+	if(! is.null(media)) {
+		mid <- try(upload.media(media), silent = TRUE)
+		if(class(mid) == "try-error") {
+			stop("Media upload failed!")	
+		}
+		query <- c(query, media_ids = mid)
+	}
+	u <- "https://api.twitter.com/1.1/statuses/update.json"
+	token <- .GlobalEnv$.twitter$token
+	ans <- try(POST(u, query = query, token), silent = TRUE)
+	if(ans$status == 200) {
+		r <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
+		res <- r$id_str
+	} else {
+		stop("Could not update status!")
+	}
+	invisible(res)
+}
