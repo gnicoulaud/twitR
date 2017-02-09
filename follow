@@ -4,12 +4,11 @@
 
 # Follows a user
 
-# user              screen_name (i.e. the @username, including the @ symbol)
+# user              screen_name (i.e. the @username)
 
 # Returns TRUE on success
 
 follow = function(user) {
-	if(substr(user, 1, 1) != "@") stop("'user' must a valid screen_name!")
 	u <- "https://api.twitter.com/1.1/friendships/create.json"
 	query <- list(screen_name = user)
 	token <- .GlobalEnv$.twitter$token
