@@ -1,0 +1,22 @@
+# -------------------------------------------------------------------------- #
+# get.tweet
+# -------------------------------------------------------------------------- #
+
+# Get information on any given tweet
+
+# id                numeric ID of the tweet
+
+# Returns a single tweet object.
+
+get.tweet = function(id) {
+	q <- list(id = id, include_entities = TRUE)
+	u <- "https://api.twitter.com/1.1/statuses/show.json"
+	token <- .GlobalEnv$.twitter$token
+	ans <- try(GET(u, query = q, token), silent = TRUE)
+	if(ans$status == 200) {
+		res <- fromJSON(content(ans, as = "text", encoding = "UTF-8"))
+	} else {
+		stop("Failed to get tweet!")
+	}
+	return(res)
+}
